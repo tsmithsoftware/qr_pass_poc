@@ -1,0 +1,32 @@
+{
+  "storeId": 1,
+  "passes": [
+    {
+      "passNumber": 1442,
+      "dateValidFrom": "2020-10-20 12:00:00.000",
+      "dateExpiry": "2021-10-21 23:00:00.000",
+      "passType": "PASS",
+      "passCategory": "A",
+      "visitorName": "Bob",
+      "visitorCompany": "BP"
+    },
+    {
+      "passNumber": 1683,
+      "dateValidFrom": "2020-11-20 12:00:00.000",
+      "dateExpiry": "2021-12-21 23:00:00.000",
+      "passType": "PASS",
+      "passCategory": "B",
+      "visitorName": "John",
+      "visitorCompany": "FDM"
+    },
+    {
+      "passNumber": 923,
+      "dateValidFrom": "2020-09-20 12:00:00.000",
+      "dateExpiry": "2021-13-21 23:00:00.000",
+      "passType": "LOA",
+      "passCategory": "C",
+      "visitorName": "Jill",
+      "visitorCompany": "Shell"
+    }
+  ]
+}

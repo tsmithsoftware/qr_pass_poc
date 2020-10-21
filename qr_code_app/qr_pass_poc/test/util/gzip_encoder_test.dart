@@ -22,7 +22,7 @@ void main() {
     File newFile = await new File('$pathString\\qrCode.png').writeAsBytes(buffer.asUint8List(qrCode.offsetInBytes, qrCode.lengthInBytes));
     // base64result is the QR code run through an online decoder (https://zxing.org/w/decode), for speed. In the project itself, this would be done with a library. Problems occurred with doing this in a test.
     assert(newFile.existsSync());
-    String base64result = "H4sIAIgGj18A/6vm5VJQUCpILC72K81NSi1SslIwNDEx0gELpySWpIYl5mSmuBXl5wJllIwMjAx0DUx1DU0UDI2sDAyASM/AwEAJody1oiCzqBKq1hCs1hSbWpCNIZUFqSCVAY7BwUjCzkBj0vMhhjhCxcsyizNL8ov8EnPBOpzyk5R4uWoB81bIB70AAAA=";
+    String base64result = "H4sIAEVnkF8A/6vm5VJQUCpILC72K81NSi1SslIwNDEx0gELpySWpIYl5mSmuBXl5wJllIwMjAx0DQ10jQwUDI2sDAyASM/AwEAJody1oiCzqBKq1hCs1lDByBhDLcjGkMqCVJDKAMfgYCRhZ6Ax6fkQQxyh4mWZxZkl+UV+iblgHU75SagSzvm5BYl5YC1OAUq8XLUA5hZFMtgAAAA=";
     Uint8List gzipresult = base64Decode(base64result);
     List<int> decodedGZipResult = GZipCodec().decode(gzipresult);
     String decodedUtf8String = utf8.decode(decodedGZipResult);

@@ -21,6 +21,8 @@ class ServerFailure extends Failure {
   }
 }
 
+class CacheFailure extends Failure {}
+
 class ConnectionFailure extends Failure {
   String message = "Device is not connected to the internet.";
 }
