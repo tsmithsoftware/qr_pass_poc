@@ -19,7 +19,7 @@ class QrPassPoc extends StatelessWidget {
         QrButton.primary(
           "Sign in using Pass",
             (){
-            Get.to(QrScanPage());
+            //Get.to(QrScanPage());
             }
         )
       ],

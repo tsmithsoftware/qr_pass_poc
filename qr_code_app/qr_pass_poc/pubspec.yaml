@@ -38,11 +38,15 @@ dependencies:
   # gzip for compression
   archive: ^2.0.13
   path_provider: ^1.6.21
+  ## localdb
+  moor_flutter: ^1.6.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
+  moor_generator: ^1.6.0
+  build_runner: ^1.6.0
 
 flutter:
   uses-material-design: true

@@ -6,14 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:qr_pass_poc/features/qrcodereader/presentation/bloc/get_pass_bloc.dart';
-import 'package:qr_pass_poc/features/qrcodereader/presentation/bloc/get_pass_event.dart';
-import 'package:qr_pass_poc/features/qrcodereader/presentation/bloc/get_pass_state.dart';
-import 'package:qr_pass_poc/features/qrcodereader/presentation/models/qr_pass_model.dart';
 import 'package:qr_pass_poc/main.dart';
 
 import '../../../../base_injection_container.dart';
-
+/**
 const flashOn = 'FLASH ON';
 const flashOff = 'FLASH OFF';
 const frontCamera = 'FRONT CAMERA';
@@ -190,3 +186,5 @@ class LoadingIndicator extends StatelessWidget {
 
 void addPassBloc(BuildContext context, QrPassModel model) =>
     BlocProvider.of<GetPassBloc>(context).add(GetConcretePass(model));
+
+    **/
