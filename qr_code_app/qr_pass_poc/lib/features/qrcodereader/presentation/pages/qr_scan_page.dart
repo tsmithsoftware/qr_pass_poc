@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_pass_poc/core/usecases/usecase.dart';
+import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_model.dart';
+import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_request_model.dart';
+import 'package:qr_pass_poc/features/qrcodereader/presentation/bloc/bloc.dart';
 import 'package:qr_pass_poc/main.dart';
 
 import '../../../../base_injection_container.dart';
-/**
+
 const flashOn = 'FLASH ON';
 const flashOff = 'FLASH OFF';
 const frontCamera = 'FRONT CAMERA';
@@ -23,6 +27,102 @@ class QrScanPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _QrScanPageState();
 }
+
+class _QrScanPageState extends State<QrScanPage> {
+  var qrText = '';
+  var flashState = flashOn;
+  var cameraState = frontCamera;
+  QRViewController controller;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  BuildContext _context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          getQrCodeScannerView()
+        ]
+      ),
+    );
+  }
+
+  Widget getQrCodeScannerView() {
+    _context = context;
+    return Expanded(
+      flex: 3,
+      child: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+          borderColor: Colors.red,
+          borderRadius: 10,
+          borderLength: 30,
+          borderWidth: 10,
+          cutOutSize: 300,
+        ),
+      ),
+    );
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        // make call here
+        dynamic gzipEncodedData = base64Decode(scanData);
+        List<int> decodedGZipResult = GZipCodec().decode(gzipEncodedData);
+        String decodedUtf8String = utf8.decode(decodedGZipResult);
+        Map<String, dynamic> dataAsJson = json.decode(decodedUtf8String);
+        try {
+          PassModel model = PassModel.fromJson(dataAsJson);
+          if (_validateQrPassModel(model)) {
+            _addPassBloc(_context, model); // Bloc will check local storage if necessary
+          } else {
+            displayError("Pass not valid! Please sign in the visitor manually.");
+          }
+        } catch (e) {
+          displayError("Error! Please sign in the visitor manually. Error details: ${e.toString()}");
+        }
+      });
+    });
+  }
+
+  bool _validateQrPassModel(PassModel model) {
+    DateTime validFrom = DateTime.parse(model.dateValidFrom);
+    DateTime validTo = DateTime.parse(model.dateExpiry);
+    DateTime now = DateTime.now();
+    bool validFromCheck = validFrom.isBefore(now);
+    bool validToCheck = validTo.isAfter(now);
+    return (validFromCheck && validToCheck);
+  }
+
+  void displayError(String message) {
+    Get.defaultDialog(
+        title: "Error!",
+        content: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(message)
+            ],
+          ),
+        ));
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+
+  void _addPassBloc(BuildContext context, PassModel model) =>
+      BlocProvider.of<ValidateQrPassBloc>(context).add(ValidateQrPass(Params(pass: PassRequestModel.fromPassModel(model))));
+}
+
+
+
+/**
 
 class _QrScanPageState extends State<QrScanPage> {
   var qrText = '';

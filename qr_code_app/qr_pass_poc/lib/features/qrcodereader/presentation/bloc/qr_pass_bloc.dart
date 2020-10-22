@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:qr_pass_poc/core/error/failures.dart';
-import 'package:qr_pass_poc/core/usecases/usecase.dart';
 import 'package:qr_pass_poc/features/qrcodereader/domain/entities/pass_validation_response_entity.dart';
 import 'package:qr_pass_poc/features/qrcodereader/domain/usecases/validate_pass.dart';
 import 'package:qr_pass_poc/features/qrcodereader/presentation/bloc/bloc.dart';
