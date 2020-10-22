@@ -41,7 +41,7 @@ void main() {
       isPassValid: true
     );
 
-    Params params = Params(storeId: 1, pass: pass);
+    Params params = Params(pass: pass);
     test('should check if the device is online', () {
       //arrange
       when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);

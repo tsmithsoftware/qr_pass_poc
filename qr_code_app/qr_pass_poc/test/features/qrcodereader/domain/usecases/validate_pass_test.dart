@@ -21,7 +21,7 @@ void main() {
     isPassValid: true
   );
 
-  final params = Params(storeId: 1);
+  final params = Params();
 
   test('should get response for valid pass from repository',() async {
     when(mockPassValidationRepository.validatePass(any)).thenAnswer((_) async => Right(tResponse));

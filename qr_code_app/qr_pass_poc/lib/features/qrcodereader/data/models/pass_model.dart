@@ -23,8 +23,12 @@ class PassModel extends PassEntity {
     visitorName: visitorName,
     visitorCompany: visitorCompany
   ) {
-    this.validDateTime = DateTime.parse(dateValidFrom);
-    this.expiryDateTime = DateTime.parse(dateExpiry);
+    if (dateValidFrom != null) {
+      this.validDateTime = DateTime.parse(dateValidFrom);
+    }
+    if (dateExpiry != null) {
+      this.expiryDateTime = DateTime.parse(dateExpiry);
+    }
   }
 
   static fromJson(Map<String, dynamic> jsonMap) {

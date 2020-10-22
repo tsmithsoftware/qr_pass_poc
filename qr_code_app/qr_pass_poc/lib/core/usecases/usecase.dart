@@ -17,12 +17,11 @@ class NoParams extends Equatable {
   List<Object> get props =>[];
 }
 class Params extends Equatable {
-  final int storeId;
   final PassRequestModel pass;
 
-  Params({this.storeId, this.pass});
+  Params({this.pass});
 
   @override
-  List<Object> get props => [storeId, pass];
+  List<Object> get props => [pass];
 
 }
