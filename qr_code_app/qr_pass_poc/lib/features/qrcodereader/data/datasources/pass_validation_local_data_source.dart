@@ -4,10 +4,10 @@ import 'package:qr_pass_poc/core/usecases/usecase.dart';
 import 'package:qr_pass_poc/data/moor_database.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_model.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_request_model.dart';
-import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_validation_response_model.dart';
+import 'package:qr_pass_poc/features/qrcodereader/domain/entities/pass_validation_response_entity.dart';
 
 abstract class PassValidationLocalDataSource {
-  Future<PassValidationResponseModel> validatePass(Params params);
+  Future<PassValidationResponseEntity> validatePass(Params params);
 }
 
 class PassValidationLocalDataSourceImpl extends PassValidationLocalDataSource {
@@ -16,13 +16,13 @@ class PassValidationLocalDataSourceImpl extends PassValidationLocalDataSource {
   PassValidationLocalDataSourceImpl({@required this.passDatabase});
 
   @override
-  Future<PassValidationResponseModel> validatePass(Params params) async {
+  Future<PassValidationResponseEntity> validatePass(Params params) async {
     List<PassRecord> result = await passDatabase.getAllRecords();
     Iterable<PassRecord> results = result.where((element) => elementMatchesParams(element, params));
-    PassValidationResponseModel model = PassValidationResponseModel(isPassValid: false);
+    PassValidationResponseEntity model = PassValidationResponseEntity(isPassValid: false);
     if(results != null) {
       if (results.isNotEmpty) {
-        model = PassValidationResponseModel(isPassValid: true);
+        model = PassValidationResponseEntity(isPassValid: true);
       }
     }
     return Future.value(model);

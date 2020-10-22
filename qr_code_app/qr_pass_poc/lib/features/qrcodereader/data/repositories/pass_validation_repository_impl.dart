@@ -7,6 +7,7 @@ import 'package:qr_pass_poc/core/usecases/usecase.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/datasources/pass_validation_local_data_source.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/datasources/pass_validation_remote_data_source.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_validation_response_model.dart';
+import 'package:qr_pass_poc/features/qrcodereader/domain/entities/pass_validation_response_entity.dart';
 import 'package:qr_pass_poc/features/qrcodereader/domain/repositories/pass_validation_repository.dart';
 
 class PassValidationRepositoryImpl implements PassValidationRepository {
@@ -21,7 +22,7 @@ class PassValidationRepositoryImpl implements PassValidationRepository {
   });
 
   @override
-  Future<Either<Failure, PassValidationResponseModel>> validatePass(Params params) async {
+  Future<Either<Failure, PassValidationResponseEntity>> validatePass(Params params) async {
     if (await networkInfo.isConnected) {
       try {
         return Right(await remoteDataSource.validatePass(params));
@@ -33,7 +34,7 @@ class PassValidationRepositoryImpl implements PassValidationRepository {
     }
   }
 
-  Future<Either<Failure, PassValidationResponseModel>> callLocalSource(Params params) async {
+  Future<Either<Failure, PassValidationResponseEntity>> callLocalSource(Params params) async {
     try {
       return Right(await localDataSource.validatePass(params));
     } on CacheException {

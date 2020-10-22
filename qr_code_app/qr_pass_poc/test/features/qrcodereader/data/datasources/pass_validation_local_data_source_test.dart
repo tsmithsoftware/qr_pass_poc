@@ -6,8 +6,7 @@ import 'package:qr_pass_poc/data/moor_database.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/datasources/pass_validation_local_data_source.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_model.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_request_model.dart';
-import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_validation_response_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_pass_poc/features/qrcodereader/domain/entities/pass_validation_response_entity.dart';
 
 class MockPassDatabase extends Mock implements PassDatabase {}
 class MockPassRecord extends Mock implements PassRecord {}
@@ -52,7 +51,7 @@ void main() {
     when(mockPassRecords.dateExpiry).thenReturn("2020-10-20 12:00:00.000");
     when(mockPassRecords.passNumber).thenReturn(1);
     when(mockPassDatabase.getAllRecords()).thenAnswer((realInvocation) async => records);
-    PassValidationResponseModel resp = await dataSource.validatePass(storeIdParams);
+    PassValidationResponseEntity resp = await dataSource.validatePass(storeIdParams);
     verify(mockPassDatabase.getAllRecords());
     assert(resp.isPassValid == true);
   });
@@ -66,7 +65,7 @@ void main() {
     when(mockPassRecords.dateExpiry).thenReturn("2020-10-20 12:00:00.000");
     when(mockPassRecords.passNumber).thenReturn(1);
     when(mockPassDatabase.getAllRecords()).thenAnswer((realInvocation) async => records);
-    PassValidationResponseModel resp = await dataSource.validatePass(allParams);
+    PassValidationResponseEntity resp = await dataSource.validatePass(allParams);
     verify(mockPassDatabase.getAllRecords());
     verify(mockPassRecords.storeId);
     verify(mockPassRecords.passCategory);

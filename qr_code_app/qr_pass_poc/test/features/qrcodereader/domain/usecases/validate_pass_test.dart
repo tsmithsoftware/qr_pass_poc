@@ -9,12 +9,12 @@ import 'package:qr_pass_poc/features/qrcodereader/domain/usecases/validate_pass.
 class MockPassValidationRepository extends Mock implements PassValidationRepository {}
 
 void main() {
-  ValidatePass usecase;
+  ValidatePassUseCase usecase;
   MockPassValidationRepository mockPassValidationRepository;
 
   setUp(() {
     mockPassValidationRepository = MockPassValidationRepository();
-    usecase = ValidatePass(mockPassValidationRepository);
+    usecase = ValidatePassUseCase(mockPassValidationRepository);
   });
 
   final tResponse = PassValidationResponseModel(
