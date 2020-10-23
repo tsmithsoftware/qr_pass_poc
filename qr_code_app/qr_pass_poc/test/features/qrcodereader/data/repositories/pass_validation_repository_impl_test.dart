@@ -75,7 +75,7 @@ void main() {
             () async {
           // arrange
           when(mockRemoteDataSource.validatePass(params))
-              .thenThrow(ServerException());
+              .thenThrow(ServerException(500, "error"));
           when(mockLocalDataSource.validatePass(params))
               .thenAnswer((_) async => tPassValidationResponseModel);
           // act
@@ -113,7 +113,7 @@ void main() {
             () async {
           // arrange
           when(mockLocalDataSource.validatePass(params))
-              .thenThrow(CacheException());
+              .thenThrow(CacheException("error"));
           // act
           final result = await repository.validatePass(params);
           // assert

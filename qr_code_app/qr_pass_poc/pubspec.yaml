@@ -33,7 +33,7 @@ dependencies:
   get: ^3.12.1
   # show images from the internet & store them in cache (temp directory)
   cached_network_image: ^2.2.0+1
-  # generating qr codes for testing
+  # generating qr codes for testing ++ qr code reader
   qr_flutter: ^3.1.0
   # gzip for compression
   archive: ^2.0.13
@@ -50,3 +50,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/

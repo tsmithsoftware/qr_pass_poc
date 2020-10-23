@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -91,5 +92,25 @@ void main() {
         expect(() => call(allParams), throwsA(TypeMatcher<ServerException>()));
       },
     );
+
+    test('should include a PassRequestModel in the body of the request',() async {
+      dynamic jsonEncodedBody = jsonEncode(allParams.pass.toJson());
+
+      // arrange
+      when(mockHttpClient.post(any, headers: anyNamed('headers'), body: jsonEncodedBody)).thenAnswer(
+            (_) async => http.Response(fixture('pass_validation_response_true.json'), 200),
+      );
+      // act
+      final result = await dataSource.validatePass(allParams);
+      // assert
+      expect(result, equals(tPassValidationResponse));
+      verify(mockHttpClient.post(
+          "http://192.168.0.5:8080/validate",
+          headers: {
+            HttpHeaders.contentTypeHeader: ContentType.json.toString()
+          },
+        body: jsonEncodedBody
+      ));
+    });
   });
 }

@@ -25,7 +25,8 @@ class PassValidationRepositoryImpl implements PassValidationRepository {
   Future<Either<Failure, PassValidationResponseEntity>> validatePass(Params params) async {
     if (await networkInfo.isConnected) {
       try {
-        return Right(await remoteDataSource.validatePass(params));
+        dynamic result = await remoteDataSource.validatePass(params);
+        return Right(result);
       } on ServerException {
         return await callLocalSource(params);
       }
@@ -36,7 +37,8 @@ class PassValidationRepositoryImpl implements PassValidationRepository {
 
   Future<Either<Failure, PassValidationResponseEntity>> callLocalSource(Params params) async {
     try {
-      return Right(await localDataSource.validatePass(params));
+      dynamic result = await localDataSource.validatePass(params);
+      return Right(result);
     } on CacheException {
       return Left(CacheFailure());
     }

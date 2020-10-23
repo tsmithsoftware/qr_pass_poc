@@ -14,7 +14,7 @@
     },
     "status": 200,
     "jsonBody": {
-      "valid": "true"
+      "isPassValid": true
     }
   }
 }

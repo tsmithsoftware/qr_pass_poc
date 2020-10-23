@@ -18,16 +18,17 @@ class PassValidationRemoteDataSourceImpl extends PassValidationRemoteDataSource 
   @override
   Future<PassValidationResponseModel> validatePass(Params params) async {
     final response = await client.post(
-        "http://localhost:8080/validate",
+        "http://192.168.0.5:8080/validate",
         headers: {
           HttpHeaders.contentTypeHeader: ContentType.json.toString()
-        }
+        },
+      body: jsonEncode(params.pass.toJson())
         );
 
     if(response.statusCode == 200) {
       return PassValidationResponseModel.fromJson(json.decode(response.body));
     } else {
-      throw ServerException();
+      throw ServerException(response.statusCode, response.body);
     }
   }
 

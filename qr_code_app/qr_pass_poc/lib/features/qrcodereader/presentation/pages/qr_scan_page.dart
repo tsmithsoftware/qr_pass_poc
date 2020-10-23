@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_pass_poc/core/logger.dart';
 import 'package:qr_pass_poc/core/usecases/usecase.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_model.dart';
 import 'package:qr_pass_poc/features/qrcodereader/data/models/pass_request_model.dart';
@@ -29,28 +30,80 @@ class QrScanPage extends StatefulWidget {
 }
 
 class _QrScanPageState extends State<QrScanPage> {
+  ValidateQrPassBloc bloc = sl<ValidateQrPassBloc>();
   var qrText = '';
   var flashState = flashOn;
   var cameraState = frontCamera;
   QRViewController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   BuildContext _context;
+  // may replace with model in validation response
+  PassModel _model;
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+    Logger.logDebug(
+        "context in qr_scan_page.dart - " + context.hashCode.toString());
     return Scaffold(
-      body: Column(
-        children: [
-          getQrCodeScannerView()
-        ]
+      body: BlocProvider<ValidateQrPassBloc>(
+        create: (_) => sl<ValidateQrPassBloc>(),
+        child: Column(children: [
+          getQrCodeScannerView(),
+          SizedBox(
+              width: 50,
+              height: 50,
+              child: BlocListener<ValidateQrPassBloc, ValidateQrPassState>(
+                cubit: bloc,
+                listener: (context, state) {
+                  if (state is Empty) {
+                    setState(() {
+                      qrText = "Empty!";
+                    });
+                  }
+                  if (state is Loading) {
+                    setState(() {
+                      qrText = "Loading!";
+                    });
+                  }
+                  if (state is Error) {
+                    setState(() {
+                      qrText = "Error!";
+                    });
+                  }
+                  if (state is Loaded) {
+                    setState(() {
+                      Get.defaultDialog(
+                          title: "Loaded!",
+                          content: Column(
+                            children: [
+                              Text("Please check the below details. If they are acceptaable, please press OK to return to main page and continue with signing in the user."),
+                              PassDisplayWidget(model: _model,)
+                            ],
+                          ),
+                          confirm: RaisedButton(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Get.to(QrPassPoc(model: _model));
+                              }));
+                      qrText = "Loaded!";
+                    });
+                  } else {
+                    setState(() {
+                      qrText = "Other!";
+                    });
+                  }
+                },
+                child: Text(qrText),
+              ))
+        ]),
       ),
     );
   }
 
   Widget getQrCodeScannerView() {
-    _context = context;
     return Expanded(
-      flex: 3,
+      flex: 2,
       child: QRView(
         key: qrKey,
         onQRViewCreated: _onQRViewCreated,
@@ -68,6 +121,9 @@ class _QrScanPageState extends State<QrScanPage> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
+      controller.pauseCamera();
+      Logger.logDebug("context in qr_scan_page._onQrViewCreated.listen - " +
+          _context.hashCode.toString());
       setState(() {
         // make call here
         dynamic gzipEncodedData = base64Decode(scanData);
@@ -75,14 +131,16 @@ class _QrScanPageState extends State<QrScanPage> {
         String decodedUtf8String = utf8.decode(decodedGZipResult);
         Map<String, dynamic> dataAsJson = json.decode(decodedUtf8String);
         try {
-          PassModel model = PassModel.fromJson(dataAsJson);
-          if (_validateQrPassModel(model)) {
-            _addPassBloc(_context, model); // Bloc will check local storage if necessary
+          _model = PassModel.fromJson(dataAsJson);
+          if (_validateQrPassModel(_model)) {
+            _addPassBloc(_model); // Bloc will check local storage if necessary
           } else {
-            displayError("Pass not valid! Please sign in the visitor manually.");
+            displayError(
+                "Pass not valid! Please sign in the visitor manually.");
           }
         } catch (e) {
-          displayError("Error! Please sign in the visitor manually. Error details: ${e.toString()}");
+          displayError(
+              "Error! Please sign in the visitor manually. Error details: ${e.toString()}");
         }
       });
     });
@@ -102,9 +160,7 @@ class _QrScanPageState extends State<QrScanPage> {
         title: "Error!",
         content: SingleChildScrollView(
           child: Column(
-            children: [
-              Text(message)
-            ],
+            children: [Text(message)],
           ),
         ));
   }
@@ -115,12 +171,17 @@ class _QrScanPageState extends State<QrScanPage> {
     super.dispose();
   }
 
+  void _addPassBloc(PassModel model) {
+    //ValidateQrPassBloc bloc = sl<ValidateQrPassBloc>();
+    Logger.logDebug("context in qr_scan_page._addPassBloc - " +
+        context.hashCode.toString());
+    //BlocProvider.of<ValidateQrPassBloc>(context).add(ValidateQrPass(Params(pass: PassRequestModel.fromPassModel(model))));
+    bloc.add(
+        ValidateQrPass(Params(pass: PassRequestModel.fromPassModel(model))));
 
-  void _addPassBloc(BuildContext context, PassModel model) =>
-      BlocProvider.of<ValidateQrPassBloc>(context).add(ValidateQrPass(Params(pass: PassRequestModel.fromPassModel(model))));
+    ///bloc.close();
+  }
 }
-
-
 
 /**
 
