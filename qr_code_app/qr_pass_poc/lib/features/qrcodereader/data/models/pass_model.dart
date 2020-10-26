@@ -47,9 +47,9 @@ class PassModel extends PassEntity {
     return {
       'passNumber': passNumber,
       'dateValidFrom': dateValidFrom,
-      'passCategory': passCategory,
       'dateExpiry': dateExpiry,
       'passType': passType,
+      'passCategory': passCategory,
       'visitorName': visitorName,
       'visitorCompany': visitorCompany
     };

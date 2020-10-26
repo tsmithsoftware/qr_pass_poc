@@ -1,0 +1,9 @@
+{
+  "passNumber": 1441,
+  "dateValidFrom": "2021-10-28 12:00:00.000",
+  "dateExpiry": "2021-10-29 23:00:00.000",
+  "passType": "PASS",
+  "passCategory": "A",
+  "visitorName": "Bob",
+  "visitorCompany": "BP"
+}

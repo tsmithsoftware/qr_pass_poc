@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qr_pass_poc/core/logger.dart';
 import 'package:qr_pass_poc/util/gzip_encoder.dart';
 import 'package:path/path.dart' as path;
 
@@ -28,4 +29,41 @@ void main() {
     String decodedUtf8String = utf8.decode(decodedGZipResult);
     assert(decodedUtf8String == dataToEncode);
   });
+
+  test('create qr codes from all files in test/fixtures/qrcodedata/jsonFiles folder', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    Directory testDataDir = Directory("test\\fixtures\\qrcodedata\\jsonFiles");
+    bool exists = await testDataDir.exists();
+    if (exists) {
+      await createCodes(testDataDir);
+    }
+
+    assert(true);
+  });
+}
+
+createCodes(Directory testDataDir) async {
+  List<FileSystemEntity> list = testDataDir.listSync(recursive: true, followLinks: false);
+  for (FileSystemEntity ent in list) {
+    if (ent is File) {
+      if (path.basename(ent.path).contains("json")) {
+        await createFile(ent, testDataDir);
+      }
+    }
+  }
+}
+
+Future<File> createFile(FileSystemEntity entity, Directory testDataDir) async {
+  String dataToEncode = File('${entity.path}').readAsStringSync();
+  // create qr code image
+  ByteData qrCode = await QrImageCreator.createEncodedQrCode(
+      data: dataToEncode);
+  // save to file
+  final buffer = qrCode.buffer;
+  String fileName = path.basename(entity.path);
+  fileName = fileName.replaceAll(".json", ".png");
+  String filePathString = testDataDir.path + "\\$fileName";
+  File newFile = await new File('$filePathString').writeAsBytes(
+      buffer.asUint8List(qrCode.offsetInBytes, qrCode.lengthInBytes));
+  return newFile;
 }

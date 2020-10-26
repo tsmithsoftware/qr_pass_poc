@@ -4,7 +4,7 @@
     "url": "/validate",
     "bodyPatterns": [
       {
-        "equalToJson": "{\"storeId\": 1,\"pass\": {\"passNumber\": 1442,\"dateValidFrom\": \"2020-10-25 12:00:00.000\",\"dateExpiry\": \"2021-10-21 23:00:00.000\",\"passType\": \"PASS\",\"passCategory\": \"A\",\"visitorName\": \"Bob\",\"visitorCompany\": \"BP\"}}"
+        "equalToJson": "{\"storeId\": 1,\"pass\": {\"passNumber\": 1442,\"dateValidFrom\": null,\"dateExpiry\": null,\"passType\": null,\"passCategory\": null,\"visitorName\": null,\"visitorCompany\": null}}"
       }
     ]
   },

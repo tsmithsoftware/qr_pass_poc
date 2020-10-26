@@ -33,7 +33,16 @@ void main() {
             dateValidFrom: "2020-10-20 12:00:00.000",
           )));
   final tPassValidationResponse = PassValidationResponseModel(
-    isPassValid: true
+    isPassValid: true,
+    pass: PassModel(
+      passType: "PASS",
+      visitorCompany: "BP",
+      visitorName: "Bob",
+      dateExpiry: "2021-10-21 23:00:00.000",
+      passCategory: "A",
+      passNumber: 1442,
+      dateValidFrom: "2020-10-20 12:00:00.000",
+    )
   );
 
   setUp(() {
@@ -48,7 +57,7 @@ void main() {
       'should perform a POST request on a URL with application/json header',
       () {
         //arrange
-        when(mockHttpClient.post(any, headers: anyNamed('headers'))).thenAnswer(
+        when(mockHttpClient.post(any, headers: anyNamed('headers'), body: anyNamed("body"))).thenAnswer(
           (_) async =>
               http.Response(fixture('pass_validation_response_true.json'), 200),
         );
@@ -56,7 +65,7 @@ void main() {
         dataSource.validatePass(allParams);
         // assert
         verify(mockHttpClient.post(
-          'http://localhost:8080/validate',
+          'http://192.168.0.5:8080/validate',
           body: anyNamed('body'),
           headers: {
             HttpHeaders.contentTypeHeader: ContentType.json.toString()
@@ -69,7 +78,7 @@ void main() {
       'should return PassValidationResponseModel when the response code is 200 (success)',
           () async {
         // arrange
-        when(mockHttpClient.post(any, headers: anyNamed('headers'))).thenAnswer(
+        when(mockHttpClient.post(any, headers: anyNamed('headers'), body: anyNamed("body"))).thenAnswer(
               (_) async => http.Response(fixture('pass_validation_response_true.json'), 200),
         );
         // act
@@ -83,7 +92,7 @@ void main() {
       'should throw a ServerException when the response code is 404 or other',
           () async {
         // arrange
-        when(mockHttpClient.post(any, headers: anyNamed('headers'))).thenAnswer(
+        when(mockHttpClient.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer(
               (_) async => http.Response('Something went wrong', 404),
         );
         // act
